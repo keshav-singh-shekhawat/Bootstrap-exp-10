@@ -18,12 +18,15 @@ body {
   border: none;
   border-radius: 15px;
 }
+#suggestions {
+  z-index: 1000;
+}
 </style>
 </head>
 
 <body>
 
-<div class="container text-center mt-5">
+<div class="container text-center mt-5 position-relative">
 
   <h2>🌤 Weather Dashboard</h2>
 
@@ -32,6 +35,10 @@ body {
     <button class="btn btn-dark" onclick="getWeather()">Search</button>
   </div>
 
+  <!-- Suggestions -->
+  <div id="suggestions" class="list-group position-absolute w-100"></div>
+
+  <!-- Weather Card -->
   <div id="weatherCard" class="card p-4 d-none">
     <h3 id="cityName"></h3>
     <h1 id="temp"></h1>
@@ -41,6 +48,7 @@ body {
 </div>
 
 <script>
+// WEATHER FUNCTION
 async function getWeather() {
   const city = document.getElementById("city").value;
 
@@ -65,6 +73,38 @@ async function getWeather() {
     alert("Error fetching weather");
   }
 }
+
+
+// SEARCH SUGGESTIONS
+const cities = [
+  "Delhi","Mumbai","Jaipur","Kolkata","Chennai",
+  "Bangalore","Hyderabad","Pune","Ahmedabad","Surat"
+];
+
+const input = document.getElementById("city");
+const suggestions = document.getElementById("suggestions");
+
+input.addEventListener("input", () => {
+  const value = input.value.toLowerCase();
+  suggestions.innerHTML = "";
+
+  if (!value) return;
+
+  const filtered = cities.filter(city => city.toLowerCase().includes(value));
+
+  filtered.forEach(city => {
+    const div = document.createElement("div");
+    div.className = "list-group-item list-group-item-action";
+    div.innerText = city;
+
+    div.onclick = () => {
+      input.value = city;
+      suggestions.innerHTML = "";
+    };
+
+    suggestions.appendChild(div);
+  });
+});
 </script>
 
 </body>
